@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import Person from './Person.js'
 
 function App() {
   // setup state
@@ -72,12 +73,7 @@ function App() {
       </form>
       <h1>Persons</h1>
         {persons.map( person => (
-          <div key={person.id} className="person">
-            <div className="names">
-              <p>{person.lastName}, {person.firstName}</p>
-            </div>
-            <button onClick={e => deletePerson(person)}>Delete</button>
-          </div>
+         <Person person={person} deleteOnePerson={deleteOnePerson} fetchPersons={fetchPersons}/>
         ))}   
     </div>
   );
