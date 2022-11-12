@@ -10,8 +10,9 @@ function App() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
-  const [subjects, setSubjects] = useState("");
-  const [times, setTimes] = useState("");
+  const [subjects, setSubjects] = useState([]);
+  const [times, setTimes] = useState([]);
+  const [currentMentor, setCurrentMentor] = useState("");
 
   const fetchMentors = async() => {
     try {      
@@ -30,9 +31,19 @@ function App() {
   }
   const deleteOneMentor = async(mentor) => {
     try {
-      await axios.delete("/api/mentors/" + mentor.userName);
+      await axios.delete("/api/mentors/" + mentor._id);
     } catch(error) {
       setError("error deleting a mentor" + error);
+    }
+  }
+
+  //Get a single mentor
+  const getOneMentor = async(mentor) => {
+    try {
+      const data  = await axios.get('/api/mentors/' + mentor.userName);
+      return data
+    } catch(error) {
+      setError("error getting the mentor" + error);
     }
   }
 
@@ -55,31 +66,42 @@ function App() {
   }
 
   // render results
-  return (
-    <div className="App">
-      {error}
-      <h1>Add a Person</h1>
-      <form onSubmit={addMentor}>
-        <div>
-          <label>
-            First Name:
-            <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Last Name:
-            <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
-          </label>
-        </div>
-        <input type="submit" value="Submit" />
-      </form>
-      <h1>Mentors</h1>
-        {mentors.map( mentor => (
-         <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors}/>
-        ))}   
-    </div>
-  );
+  if (currentMentor === "") {
+    return (
+      <div className="App">
+        {error}
+        <h1>Add a Person</h1>
+        <form onSubmit={addMentor}>
+          <div>
+            <label>
+              First Name:
+              <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
+            </label>
+          </div>
+          <div>
+            <label>
+              Last Name:
+              <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
+            </label>
+          </div>
+          <input type="submit" value="Submit" />
+        </form>
+        <h1>Mentors</h1>
+          {mentors.map( mentor => (
+          <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
+          ))}   
+      </div>
+    );
+  }
+    else {
+      return (
+        <div className="App">
+          {error}
+          <h1>NEW PAGE</h1>
+          <button onClick={e => setCurrentMentor("")}>Back</button>
+          </div>
+      );
+      }
 }
 
 export default App;

@@ -61,7 +61,19 @@ app.post('/api/mentors', async (req, res) => {
   }
 });
 
-app.delete('/api/mentors/:userName', async (req, res) => {
+app.delete('/api/mentors/:_id', async (req, res) => {
+  try {
+    await Mentor.deleteOne({
+      userName: req.params._id
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get('/api/mentors/:userName', async (req, res) => {
   try {
     await Mentor.deleteOne({
       userName: req.params.userName
