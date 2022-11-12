@@ -52,30 +52,37 @@ function App() {
   }
 
   // render results
-  return (
-    <div className="App">
-      {error}
-      <h1>Add a Person</h1>
-      <form onSubmit={addPerson}>
-        <div>
-          <label>
-            First Name:
-            <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Last Name:
-            <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
-          </label>
-        </div>
-        <input type="submit" value="Submit" />
-      </form>
-      <h1>Persons</h1>
-        {persons.map( person => (
-         <Person person={person} deleteOnePerson={deleteOnePerson} fetchPersons={fetchPersons}/>
-        ))}   
-    </div>
+    return (
+	    <div className="App">
+	    {error}
+	    <h1>Add a Person</h1>
+            <div>
+            <input type="time" min="05:00" max="22:00"/>
+	    <input type="time" min="05:00" max="22:00"/>
+	    <select name="days">
+	    <option value="Monday">Monday</option>
+	    <option value="Tuesday">Tuesday</option>
+	    <option value="Wednesday">Wednesday</option>
+	    <option value="Thursday">Thursday</option>
+	    <option value="Friday">Friday</option>
+	    <option value="Saturday">Saturday</option>
+	    <option value="Sunday">Sunday</option>
+	    </select>
+	    <select name="subject">
+	    <option value="Math">Math</option>
+	    <option value="Science">Science</option>
+	    <option value="English">English</option>
+	    <option value="Thursday">Thursday</option>
+	    <option value="Friday">Friday</option>
+	    <option value="Saturday">Saturday</option>
+	    <option value="Sunday">Sunday</option>
+	    </select>
+            </div>
+	    <h1>Persons</h1>
+            {persons.map( person => (
+		    <Person person={person} deleteOnePerson={deleteOnePerson} fetchPersons={fetchPersons}/>
+            ))}
+	</div>
   );
 }
 

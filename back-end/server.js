@@ -15,6 +15,44 @@ mongoose.connect('mongodb://localhost:27017/hackathon', {
   useNewUrlParser: true
 });
 
+const subjectSchema = new mongoose.Schema({
+  name: String
+});
+
+subjectSchema.virtual('id')
+  .get(function() {
+    return this._id.toHexString();
+  });
+
+subjectSchema.set('toJSON', {
+  virtuals: true
+});
+
+const Subject = mongoose.model('Subject', subjectSchema);
+
+app.get('/api/subjects', async (req, res) => {
+  try {
+    let subjects = await Subject.find();
+    res.send({subjects: subjects});
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.post('/api/subjects', async (req, res) => {
+    const subject = new Subject({
+    name: req.body.name
+  });
+  try {
+    await subject.save();
+    res.send({subject:subject});
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 const personSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
