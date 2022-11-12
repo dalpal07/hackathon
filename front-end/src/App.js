@@ -8,7 +8,17 @@ function App() {
   const [persons, setPersons] = useState([]);
   const [error, setError] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [subjects, setSubjects] = useState([]);
+
+    const fetchSubjects = async() => {
+	try {
+	    const response = await axios.get("/api/subjects");
+	    setSubjects(response.data.subjects);
+	} catch(error) {
+	    setError("error retrieving subjects: " + error);
+	}
+    }
 
   const fetchPersons = async() => {
     try {      
@@ -36,6 +46,10 @@ function App() {
   // fetch ticket data
   useEffect(() => {
     fetchPersons();
+  },[]);
+
+    useEffect(() => {
+    fetchSubjects();
   },[]);
 
   const addPerson = async(e) => {
@@ -69,14 +83,12 @@ function App() {
 	    <option value="Sunday">Sunday</option>
 	    </select>
 	    <select name="subject">
-	    <option value="Math">Math</option>
-	    <option value="Science">Science</option>
-	    <option value="English">English</option>
-	    <option value="Thursday">Thursday</option>
-	    <option value="Friday">Friday</option>
-	    <option value="Saturday">Saturday</option>
-	    <option value="Sunday">Sunday</option>
-	    </select>
+	    {subjects.map( subject => {
+		if (subject.name !== undefined) {
+		    return (<option value={subject.name}>{subject.name}</option>)
+		}
+	    })}
+	   </select>
             </div>
 	    <h1>Persons</h1>
             {persons.map( person => (
