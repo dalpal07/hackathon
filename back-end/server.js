@@ -15,50 +15,56 @@ mongoose.connect('mongodb://localhost:27017/hackathon', {
   useNewUrlParser: true
 });
 
-const personSchema = new mongoose.Schema({
+const mentorSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
+  userName: String,
+  Subjects: [],
+  Times: []
 });
 
-personSchema.virtual('id')
+mentorSchema.virtual('id')
   .get(function() {
     return this._id.toHexString();
   });
   
-personSchema.set('toJSON', {
+mentorSchema.set('toJSON', {
   virtuals: true
 });
 
-const Person = mongoose.model('Person', personSchema);
+const Mentor = mongoose.model('Mentor', mentorSchema);
 
-app.get('/api/persons', async (req, res) => {
+app.get('/api/mentors', async (req, res) => {
   try {
-    let persons = await Person.find();
-    res.send({persons: persons});
+    let mentors = await Mentor.find();
+    res.send({mentors: mentors});
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
 });
 
-app.post('/api/persons', async (req, res) => {
-    const person = new Person({
+app.post('/api/mentors', async (req, res) => {
+    const mentor = new Mentor({
     firstName: req.body.firstName,
-    lastName: req.body.lastName
+    lastName: req.body.lastName,
+    userName: req.body.userName,
+    Subject: req.body.subjects,
+    Times: req.body.times
   });
   try {
-    await person.save();
-    res.send({person:person});
+    await mentor.save();
+    res.send({mentor:mentor});
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
 });
 
-app.delete('/api/persons/:id', async (req, res) => {
+app.delete('/api/mentors/:userName', async (req, res) => {
   try {
-    await Person.deleteOne({
-      _id: req.params.id
+    await Mentor.deleteOne({
+      userName: req.params.userName
     });
     res.sendStatus(200);
   } catch (error) {
