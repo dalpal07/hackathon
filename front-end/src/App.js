@@ -8,11 +8,16 @@ function App() {
   const [mentors, setMentors] = useState([]);
   const [error, setError] = useState("");
     const [firstName, setFirstName] = useState("");
-     const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [times, setTimes] = useState([]);
   const [currentMentor, setCurrentMentor] = useState("");
+  const [filteredMentors, setFilteredMentors] = useState([]);
+  const [targetStartTime, setTargetStartTime] = useState("");
+  const [targetEndTime, setTargetEndTime] = useState("");
+  const [targetDay, setTargetDay] = useState("");
+  const [targetSubject, setTargetSubject] = useState("");
 
     const fetchSubjects = async() => {
 	try {
@@ -78,6 +83,29 @@ function App() {
     fetchMentors();
   }
 
+  //Filter on weekday
+  const filterOnDay = async(e) => {
+    setTargetDay(e.target.value)
+    filterOnAll()
+  }
+
+  //Filter on subjects
+  const filterOnSubject = async(e) => {
+    setTargetSubject(e.target.value)
+    filterOnAll()
+  }
+
+  //Filter on all
+  const filterOnAll = async() => {
+    filteredMentors = []
+    for (let i = 0; i < mentors.size(); ++i) {
+      if (mentors[i].times.includes(targetDay) && mentors[i].subjects.includes(targetSubject)) {
+        filteredMentors.push(mentors[i])
+      }
+    }
+    setFilteredMentors(filteredMentors)
+  }
+
   // render results
   if (currentMentor === "") {
     return (
@@ -88,7 +116,7 @@ function App() {
           <div>
             <input type="time" min="05:00" max="22:00"/>
           <input type="time" min="05:00" max="22:00"/>
-          <select name="days">
+          <select name="days" onChange={filterOnDay()}>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -97,11 +125,17 @@ function App() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
 	        </select>
+          <select name="subject" onChange={filterOnSubject()}>
+        {subjects.map( subject => {
+        if (subject.name !== undefined) {
+            return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+        }
+        })}
+       </select>
           </div>
-          <input type="submit" value="Submit" />
         </form>
         <h1>Mentors</h1>
-          {mentors.map( mentor => (
+          {filteredMentors.map( mentor => (
           <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
           ))}   
       </div>
