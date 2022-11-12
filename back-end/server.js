@@ -49,7 +49,7 @@ app.post('/api/mentors', async (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     userName: req.body.userName,
-    Subject: req.body.subjects,
+    Subjects: req.body.subjects,
     Times: req.body.times
   });
   try {
