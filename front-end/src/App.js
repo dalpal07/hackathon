@@ -88,7 +88,7 @@ function App() {
 	    <select name="subject">
 	    {subjects.map( subject => {
 		if (subject.name !== undefined) {
-		    return (<option value={subject.name}>{subject.name}</option>)
+		    return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
 		}
 	    })}
 	   </select>
