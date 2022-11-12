@@ -61,18 +61,18 @@ function App() {
       <h1>Add a Person</h1>
       <form onSubmit={addMentor}>
         <div>
-          <label>
-            First Name:
-            <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
-          </label>
+          <input type="time" min="05:00" max="22:00"/>
+          <input type="time" min="05:00" max="22:00"/>
+          <select name="days">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+	        </select>
         </div>
-        <div>
-          <label>
-            Last Name:
-            <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
-          </label>
-        </div>
-        <input type="submit" value="Submit" />
       </form>
       <h1>Mentors</h1>
         {mentors.map( mentor => (
