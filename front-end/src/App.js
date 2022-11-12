@@ -7,13 +7,22 @@ function App() {
   // setup state
   const [mentors, setMentors] = useState([]);
   const [error, setError] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+    const [firstName, setFirstName] = useState("");
+     const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [times, setTimes] = useState([]);
   const [currentMentor, setCurrentMentor] = useState("");
 
+    const fetchSubjects = async() => {
+	try {
+	    const response = await axios.get("/api/subjects");
+	    setSubjects(response.data.subjects);
+	} catch(error) {
+	    setError("error retrieving subjects: " + error);
+	}
+    }
+ 
   const fetchMentors = async() => {
     try {      
       const response = await axios.get("/api/mentors");
@@ -52,7 +61,11 @@ function App() {
     fetchMentors();
   },[]);
 
-  const addMentor = async(e) => {
+    useEffect(() => {
+    fetchSubjects();
+  },[]);
+
+   const addMentor = async(e) => {
     e.preventDefault();
     await createMentor();
     fetchMentors();
