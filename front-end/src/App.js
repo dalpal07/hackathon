@@ -11,8 +11,8 @@ function App() {
      const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [subjects, setSubjects] = useState([]);
-  const [times, setTimes] = useState("");
-
+  const [times, setTimes] = useState([]);
+  const [currentMentor, setCurrentMentor] = useState("");
 
     const fetchSubjects = async() => {
 	try {
@@ -40,9 +40,19 @@ function App() {
   }
   const deleteOneMentor = async(mentor) => {
     try {
-      await axios.delete("/api/mentors/" + mentor.userName);
+      await axios.delete("/api/mentors/" + mentor._id);
     } catch(error) {
       setError("error deleting a mentor" + error);
+    }
+  }
+
+  //Get a single mentor
+  const getOneMentor = async(mentor) => {
+    try {
+      const data  = await axios.get('/api/mentors/' + mentor.userName);
+      return data
+    } catch(error) {
+      setError("error getting the mentor" + error);
     }
   }
 
@@ -69,36 +79,43 @@ function App() {
   }
 
   // render results
+  if (currentMentor === "") {
     return (
-	    <div className="App">
-	    {error}
-	    <h1>Add a Person</h1>
-            <div>
+      <div className="App">
+        {error}
+        <h1>Add a Person</h1>
+        <form onSubmit={addMentor}>
+          <div>
             <input type="time" min="05:00" max="22:00"/>
-	    <input type="time" min="05:00" max="22:00"/>
-	    <select name="days">
-	    <option value="Monday">Monday</option>
-	    <option value="Tuesday">Tuesday</option>
-	    <option value="Wednesday">Wednesday</option>
-	    <option value="Thursday">Thursday</option>
-	    <option value="Friday">Friday</option>
-	    <option value="Saturday">Saturday</option>
-	    <option value="Sunday">Sunday</option>
-	    </select>
-	    <select name="subject">
-	    {subjects.map( subject => {
-		if (subject.name !== undefined) {
-		    return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
-		}
-	    })}
-	   </select>
-            </div>
-	    <h1>Mentors</h1>
-        {mentors.map( mentor => (
-         <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors}/>
-        ))}   
-	</div>
-  );
+          <input type="time" min="05:00" max="22:00"/>
+          <select name="days">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+	        </select>
+          </div>
+          <input type="submit" value="Submit" />
+        </form>
+        <h1>Mentors</h1>
+          {mentors.map( mentor => (
+          <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
+          ))}   
+      </div>
+    );
+  }
+    else {
+      return (
+        <div className="App">
+          {error}
+          <h1>NEW PAGE</h1>
+          <button onClick={e => setCurrentMentor("")}>Back</button>
+          </div>
+      );
+      }
 }
 
 export default App;
