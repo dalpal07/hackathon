@@ -96,10 +96,16 @@ function App() {
             <option value="Friday">Friday</option>
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
-	        </select>
+	    </select>
+	    <select name="subject">
+	    {subjects.map( subject => {
+		if (subject.name !== undefined) {
+		    return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+		}
+	    })}
+	   </select>
           </div>
-          <input type="submit" value="Submit" />
-        </form>
+          </form>
         <h1>Mentors</h1>
           {mentors.map( mentor => (
           <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
