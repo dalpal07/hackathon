@@ -12,7 +12,7 @@ function App() {
   const [userName, setUserName] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [times, setTimes] = useState([]);
-  const [currentMentor, setCurrentMentor] = useState("");
+    const [currentMentor, setCurrentMentor] = useState({});
 
     const fetchSubjects = async() => {
 	try {
@@ -79,11 +79,11 @@ function App() {
   }
 
   // render results
-  if (currentMentor === "") {
+    if (currentMentor.id === undefined) {
     return (
       <div className="App">
-        {error}
-        <h1>Add a Person</h1>
+            {error}
+	<br/>
         <form onSubmit={addMentor}>
           <div>
             <input type="time" min="05:00" max="22:00"/>
@@ -117,8 +117,21 @@ function App() {
       return (
         <div className="App">
           {error}
-          <h1>NEW PAGE</h1>
-          <button onClick={e => setCurrentMentor("")}>Back</button>
+              <h1>{currentMentor.lastName}, {currentMentor.firstName}</h1>
+	      <h2>@{currentMentor.userName}</h2>
+	      <h3>Subjects:</h3>
+	      <p>
+	      {currentMentor.Subjects.map(subject => (
+		      <span>{subject}<br/></span>
+	      ))}
+	  </p>
+	      <h3>Available Times:</h3>
+	      <p>
+	      {currentMentor.Times.map(time => (
+		      <span>{time.day}: {time.start} - {time.end}<br/></span>
+	      ))}
+	  </p>
+              <button onClick={e => setCurrentMentor({})}>Back</button>
           </div>
       );
       }
