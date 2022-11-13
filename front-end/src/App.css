@@ -7,6 +7,27 @@
   pointer-events: none;
 }
 
+.slight-design {
+  margin:1em;
+  background-color: lightblue;
+  font-weight:bolder;
+}
+
+.info {
+  border: 2px solid black;
+  margin: 1em;
+  margin-left: 30em;
+  margin-right: 30em;
+}
+
+#back {
+  display: block;
+}
+
+.mentorButton {
+  width: 20em;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

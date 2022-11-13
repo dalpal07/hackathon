@@ -162,9 +162,17 @@ function App() {
             {error}
 	<h1>The Human Library</h1> 
         <form onSubmit={addMentor}>
-          <div>
-            <input type="time" min="05:00" max="22:00" onChange={filterOnTime}/>
-          <select name="days" onChange={filterOnDay}>
+            <div>
+	    <select name="subject" onChange={filterOnSubject} className="slight-design">
+	    <option value="none" selected disabled hidden>Select a Subject</option>
+	    {subjects.map( subject => {
+        if (subject.name !== undefined) {
+            return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+        }
+        })}
+       </select>
+	    <select name="days" onChange={filterOnDay} className="slight-design">
+	    <option value="none" selected disabled hidden>Select a Day</option>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -173,14 +181,8 @@ function App() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
 	        </select>
-          <select name="subject" onChange={filterOnSubject}>
-        {subjects.map( subject => {
-        if (subject.name !== undefined) {
-            return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
-        }
-        })}
-       </select>
-          </div>
+            <input type="time" min="05:00" max="22:00" className="slight-design" onChange=(filterOnTime}/>           
+           </div>
         </form>
         <h1>Mentors</h1>
           {filteredMentors.map( mentor => (
@@ -195,19 +197,32 @@ function App() {
           {error}
               <h1>{currentMentor.lastName}, {currentMentor.firstName}</h1>
 	      <h2>@{currentMentor.userName}</h2>
+	      <div className="info">
 	      <h3>Subjects:</h3>
 	      <p>
 	      {currentMentor.Subjects.map(subject => (
 		      <span>{subject}<br/></span>
 	      ))}
 	  </p>
+	      </div>
+	      <div className="info">
 	      <h3>Available Times:</h3>
 	      <p>
 	      {currentMentor.Times.map(time => (
 		      <span>{time.day}: {time.start} - {time.end}<br/></span>
 	      ))}
 	  </p>
-              <button onClick={e => setCurrentMentor({})}>Back</button>
+	      </div>
+	      <div className="info">
+	      <h3>Contact Information:</h3>
+	      <p>
+	      {currentMentor.firstName.toLowerCase()}.{currentMentor.lastName.toLowerCase()}@gmail.com<br/>
+	      801-{Math.floor(100 + Math.random() * 900)}-{Math.floor(1000 + Math.random() * 9000)}
+	  </p>
+	</div>
+	      <div id="back">
+              <button onClick={e => setCurrentMentor({})} className="slight-design">Back</button>
+	      </div>
           </div>
       );
       }
