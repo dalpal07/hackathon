@@ -3,8 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Mentor from './Mentor.js'
 
-var targetStartTime = ""
-var targetEndTime = ""
+var targetTime = ""
 var targetDay = ""
 var targetSubject = ""
 
@@ -87,9 +86,10 @@ function App() {
     
 //Filter on all
     function filterOnAll() {
-	console.log(targetDay + ", " + targetSubject)
+	console.log(targetDay + ", " + targetSubject + ", " + targetTime)
 	let dayMentors = []
     let subjectMentors = []
+    let timeMentors = []
     if (targetDay !== "") {
       for (let i = 0; i < mentors.length; ++i) {
         let containsDay = false
@@ -116,7 +116,25 @@ function App() {
     else {
 	subjectMentors = dayMentors.slice();
     }
-    setFilteredMentors(subjectMentors)
+    if (targetTime !== "") {
+      for (let i = 0; i < subjectMentors.length; ++i) {
+        let withinRange = false
+        for (let j = 0; j < subjectMentors[i].Times.length; ++j) {
+          let start = subjectMentors[i].Times[j].start[0] + subjectMentors[i].Times[j].start[1]
+          let end = subjectMentors[i].Times[j].end[0] + subjectMentors[i].Times[j].end[1]
+          if ((Number(targetTime) < Number(end)) && (Number(targetTime) >= Number(start)) && (targetDay === "" || targetDay === subjectMentors[i].Times[j].day)) {
+            withinRange = true
+          }
+        }
+        if (withinRange) {
+          timeMentors.push(subjectMentors[i])
+        }
+      }
+    }
+    else {
+      timeMentors = subjectMentors.slice();
+    }
+    setFilteredMentors(timeMentors)
   }
 
   //Filter on weekday
@@ -131,6 +149,12 @@ function App() {
 	filterOnAll()
   }
 
+  //Filter on time
+    const filterOnTime = async(e) => {
+      targetTime = e.target.value[0] + e.target.value[1]
+      filterOnAll()
+    }
+
     // render results
     if (currentMentor.id === undefined) {
     return (
@@ -139,8 +163,7 @@ function App() {
 	<h1>The Human Library</h1> 
         <form onSubmit={addMentor}>
           <div>
-            <input type="time" min="05:00" max="22:00"/>
-          <input type="time" min="05:00" max="22:00"/>
+            <input type="time" min="05:00" max="22:00" onChange={filterOnTime}/>
           <select name="days" onChange={filterOnDay}>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
