@@ -3,8 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Mentor from './Mentor.js'
 
-var targetStartTime = ""
-var targetEndTime = ""
+var targetTime = ""
 var targetDay = ""
 var targetSubject = ""
 
@@ -87,9 +86,10 @@ function App() {
     
 //Filter on all
     function filterOnAll() {
-	console.log(targetDay + ", " + targetSubject)
+	console.log(targetDay + ", " + targetSubject + ", " + targetTime)
 	let dayMentors = []
     let subjectMentors = []
+    let timeMentors = []
     if (targetDay !== "") {
       for (let i = 0; i < mentors.length; ++i) {
         let containsDay = false
@@ -116,7 +116,25 @@ function App() {
     else {
 	subjectMentors = dayMentors.slice();
     }
-    setFilteredMentors(subjectMentors)
+    if (targetTime !== "") {
+      for (let i = 0; i < subjectMentors.length; ++i) {
+        let withinRange = false
+        for (let j = 0; j < subjectMentors[i].Times.length; ++j) {
+          let start = subjectMentors[i].Times[j].start[0] + subjectMentors[i].Times[j].start[1]
+          let end = subjectMentors[i].Times[j].end[0] + subjectMentors[i].Times[j].end[1]
+          if ((Number(targetTime) < Number(end)) && (Number(targetTime) >= Number(start)) && (targetDay === "" || targetDay === subjectMentors[i].Times[j].day)) {
+            withinRange = true
+          }
+        }
+        if (withinRange) {
+          timeMentors.push(subjectMentors[i])
+        }
+      }
+    }
+    else {
+      timeMentors = subjectMentors.slice();
+    }
+    setFilteredMentors(timeMentors)
   }
 
   //Filter on weekday
@@ -130,6 +148,12 @@ function App() {
 	targetSubject = e.target.value
 	filterOnAll()
   }
+
+  //Filter on time
+    const filterOnTime = async(e) => {
+      targetTime = e.target.value[0] + e.target.value[1]
+      filterOnAll()
+    }
 
     // render results
     if (currentMentor.id === undefined) {
@@ -157,8 +181,7 @@ function App() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
 	        </select>
-            <input type="time" min="05:00" max="22:00" className="slight-design"/>
-          <input type="time" min="05:00" max="22:00"/>            
+            <input type="time" min="05:00" max="22:00" className="slight-design" onChange=(filterOnTime}/>           
            </div>
         </form>
         <h1>Mentors</h1>
