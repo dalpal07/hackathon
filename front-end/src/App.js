@@ -8,11 +8,16 @@ function App() {
   const [mentors, setMentors] = useState([]);
   const [error, setError] = useState("");
     const [firstName, setFirstName] = useState("");
-     const [lastName, setLastName] = useState("");
+    const [lastName, setLastName] = useState("");
   const [userName, setUserName] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [times, setTimes] = useState([]);
-    const [currentMentor, setCurrentMentor] = useState({});
+  const [currentMentor, setCurrentMentor] = useState({});
+  const [filteredMentors, setFilteredMentors] = useState([]);
+  const [targetStartTime, setTargetStartTime] = useState("");
+  const [targetEndTime, setTargetEndTime] = useState("");
+  const [targetDay, setTargetDay] = useState("");
+  const [targetSubject, setTargetSubject] = useState("");
 
     const fetchSubjects = async() => {
 	try {
@@ -27,6 +32,7 @@ function App() {
     try {      
       const response = await axios.get("/api/mentors");
       setMentors(response.data.mentors);
+      setFilteredMentors(response.data.mentors);
     } catch(error) {
       setError("error retrieving mentors: " + error);
     }
@@ -78,6 +84,48 @@ function App() {
     fetchMentors();
   }
 
+  //Filter on weekday
+  const filterOnDay = async(e) => {
+    setTargetDay(e.target.value)
+    filterOnAll()
+  }
+
+  //Filter on subjects
+  const filterOnSubject = async(e) => {
+    setTargetSubject(e.target.value)
+    filterOnAll()
+  }
+
+  //Filter on all
+  const filterOnAll = async() => {
+    let dayMentors = mentors
+    let subjectMentors = []
+    if (targetDay !== "") {
+      for (let i = 0; i < mentors.length; ++i) {
+        let containsDay = false
+        for (let j = 0; j < mentors[i].Times.length; ++j) {
+          if (mentors[i].Times[j].day === targetDay) {
+            containsDay = true
+          }
+        }
+        if (containsDay) {
+          dayMentors.push(mentors[i])
+        }
+      }
+    }
+    if (targetSubject !== "") {
+      for (let i = 0; i < dayMentors.length; ++i) {
+        if (dayMentors[i].Subjects.includes(targetSubject)) {
+          subjectMentors.push(dayMentors[i])
+        }
+      }
+    }
+    else {
+      subjectMentors = dayMentors
+    }
+    setFilteredMentors(subjectMentors)
+  }
+
   // render results
     if (currentMentor.id === undefined) {
     return (
@@ -88,7 +136,7 @@ function App() {
           <div>
             <input type="time" min="05:00" max="22:00"/>
           <input type="time" min="05:00" max="22:00"/>
-          <select name="days">
+          <select name="days" onChange={filterOnDay}>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -96,18 +144,18 @@ function App() {
             <option value="Friday">Friday</option>
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
-	    </select>
-	    <select name="subject">
-	    {subjects.map( subject => {
-		if (subject.name !== undefined) {
-		    return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
-		}
-	    })}
-	   </select>
+	        </select>
+          <select name="subject" onChange={filterOnSubject}>
+        {subjects.map( subject => {
+        if (subject.name !== undefined) {
+            return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+        }
+        })}
+       </select>
           </div>
-          </form>
+        </form>
         <h1>Mentors</h1>
-          {mentors.map( mentor => (
+          {filteredMentors.map( mentor => (
           <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
           ))}   
       </div>
