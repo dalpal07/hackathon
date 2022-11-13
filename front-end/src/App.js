@@ -181,7 +181,7 @@ function App() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
 	        </select>
-            <input type="time" min="05:00" max="22:00" className="slight-design" onChange=(filterOnTime}/>           
+            <input type="time" min="05:00" max="22:00" className="slight-design" onChange={filterOnTime}/>           
            </div>
         </form>
         <h1>Mentors</h1>
