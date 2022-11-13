@@ -3,6 +3,11 @@ import axios from 'axios';
 import './App.css';
 import Mentor from './Mentor.js'
 
+var targetStartTime = ""
+var targetEndTime = ""
+var targetDay = ""
+var targetSubject = ""
+
 function App() {
   // setup state
   const [mentors, setMentors] = useState([]);
@@ -13,11 +18,7 @@ function App() {
   const [subjects, setSubjects] = useState([]);
   const [times, setTimes] = useState([]);
   const [currentMentor, setCurrentMentor] = useState({});
-  const [filteredMentors, setFilteredMentors] = useState([]);
-  const [targetStartTime, setTargetStartTime] = useState("");
-  const [targetEndTime, setTargetEndTime] = useState("");
-  const [targetDay, setTargetDay] = useState("");
-  const [targetSubject, setTargetSubject] = useState("");
+    const [filteredMentors, setFilteredMentors] = useState([]);
 
     const fetchSubjects = async() => {
 	try {
@@ -83,22 +84,11 @@ function App() {
     await deleteOneMentor(mentor);
     fetchMentors();
   }
-
-  //Filter on weekday
-  const filterOnDay = async(e) => {
-    setTargetDay(e.target.value)
-    filterOnAll()
-  }
-
-  //Filter on subjects
-  const filterOnSubject = async(e) => {
-    setTargetSubject(e.target.value)
-    filterOnAll()
-  }
-
-  //Filter on all
-  const filterOnAll = async() => {
-    let dayMentors = mentors
+    
+//Filter on all
+    function filterOnAll() {
+	console.log(targetDay + ", " + targetSubject)
+	let dayMentors = []
     let subjectMentors = []
     if (targetDay !== "") {
       for (let i = 0; i < mentors.length; ++i) {
@@ -113,6 +103,9 @@ function App() {
         }
       }
     }
+	else {
+	    dayMentors = mentors.slice()
+	}
     if (targetSubject !== "") {
       for (let i = 0; i < dayMentors.length; ++i) {
         if (dayMentors[i].Subjects.includes(targetSubject)) {
@@ -121,12 +114,24 @@ function App() {
       }
     }
     else {
-      subjectMentors = dayMentors
+	subjectMentors = dayMentors.slice();
     }
     setFilteredMentors(subjectMentors)
   }
 
-  // render results
+  //Filter on weekday
+    const filterOnDay = async(e) => {
+	targetDay = e.target.value
+	filterOnAll()
+  }
+
+  //Filter on subjects
+    const filterOnSubject = async(e) => {
+	targetSubject = e.target.value
+	filterOnAll()
+  }
+
+    // render results
     if (currentMentor.id === undefined) {
     return (
       <div className="App">
