@@ -32,6 +32,7 @@ function App() {
     try {      
       const response = await axios.get("/api/mentors");
       setMentors(response.data.mentors);
+      setFilteredMentors(response.data.mentors);
     } catch(error) {
       setError("error retrieving mentors: " + error);
     }
@@ -97,13 +98,32 @@ function App() {
 
   //Filter on all
   const filterOnAll = async() => {
-    filteredMentors = []
-    for (let i = 0; i < mentors.size(); ++i) {
-      if (mentors[i].times.includes(targetDay) && mentors[i].subjects.includes(targetSubject)) {
-        filteredMentors.push(mentors[i])
+    let dayMentors = mentors
+    let subjectMentors = []
+    if (targetDay !== "") {
+      for (let i = 0; i < mentors.length; ++i) {
+        let containsDay = false
+        for (let j = 0; j < mentors[i].Times.length; ++j) {
+          if (mentors[i].Times[j].day === targetDay) {
+            containsDay = true
+          }
+        }
+        if (containsDay) {
+          dayMentors.push(mentors[i])
+        }
       }
     }
-    setFilteredMentors(filteredMentors)
+    if (targetSubject !== "") {
+      for (let i = 0; i < dayMentors.length; ++i) {
+        if (dayMentors[i].Subjects.includes(targetSubject)) {
+          subjectMentors.push(dayMentors[i])
+        }
+      }
+    }
+    else {
+      subjectMentors = dayMentors
+    }
+    setFilteredMentors(subjectMentors)
   }
 
   // render results
@@ -116,7 +136,7 @@ function App() {
           <div>
             <input type="time" min="05:00" max="22:00"/>
           <input type="time" min="05:00" max="22:00"/>
-          <select name="days" onChange={filterOnDay()}>
+          <select name="days" onChange={filterOnDay}>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -125,7 +145,7 @@ function App() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
 	        </select>
-          <select name="subject" onChange={filterOnSubject()}>
+          <select name="subject" onChange={filterOnSubject}>
         {subjects.map( subject => {
         if (subject.name !== undefined) {
             return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
