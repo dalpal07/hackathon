@@ -83,7 +83,7 @@ function App() {
     return (
       <div className="App">
             {error}
-	<br/>
+	<h1>The Human Library</h1> 
         <form onSubmit={addMentor}>
           <div>
             <input type="time" min="05:00" max="22:00"/>
