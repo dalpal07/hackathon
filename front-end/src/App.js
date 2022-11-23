@@ -6,6 +6,7 @@ import Mentor from './Mentor.js'
 var targetTime = ""
 var targetDay = ""
 var targetSubject = ""
+var time = ""
 
 function App() {
   // setup state
@@ -151,8 +152,16 @@ function App() {
 
   //Filter on time
     const filterOnTime = async(e) => {
+      time = e.target.value
       targetTime = e.target.value[0] + e.target.value[1]
       filterOnAll()
+    }
+    
+    const resetFilter = async() => {
+      time = ""
+      targetDay = ""
+      targetSubject = ""
+      targetTime = ""
     }
 
     // render results
@@ -164,30 +173,41 @@ function App() {
         <form onSubmit={addMentor}>
             <div>
 	    <select name="subject" onChange={filterOnSubject} className="slight-design">
-	    <option value="none" selected disabled hidden>Select a Subject</option>
+	    {targetSubject === "" && <option value="none" selected disabled hidden>Select a Subject</option>}
 	    {subjects.map( subject => {
         if (subject.name !== undefined) {
-            return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+            if (subject.name === targetSubject) {
+              return (<option value={subject.name} key={subject.id} selected>{subject.name}</option>)
+            }
+            else {
+              return (<option value={subject.name} key={subject.id}>{subject.name}</option>)
+            }
         }
         })}
        </select>
 	    <select name="days" onChange={filterOnDay} className="slight-design">
-	    <option value="none" selected disabled hidden>Select a Day</option>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
+	          {targetDay === "" && <option value="none" selected disabled hidden>Select a Day</option>}
+            <option value="Monday" selected={targetDay === "Monday"}>Monday</option>
+            <option value="Tuesday" selected={targetDay === "Tuesday"}>Tuesday</option>
+            <option value="Wednesday" selected={targetDay === "Wednesday"}>Wednesday</option>
+            <option value="Thursday" selected={targetDay === "Thursday"}>Thursday</option>
+            <option value="Friday" selected={targetDay === "Friday"}>Friday</option>
+            <option value="Saturday" selected={targetDay === "Saturday"}>Saturday</option>
+            <option value="Sunday" selected={targetDay === "Sunday"}>Sunday</option>
 	        </select>
-            <input type="time" min="05:00" max="22:00" className="slight-design" onChange={filterOnTime}/>           
+            <input type="time" min="05:00" max="22:00" className="slight-design" onChange={filterOnTime} value={time}/>
+            <button onClick={resetFilter} className="slight-design">Reset Filter</button>
            </div>
         </form>
         <h1>Mentors</h1>
-          {filteredMentors.map( mentor => (
-          <Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>
-          ))}   
+        <div>
+          {filteredMentors.map( mentor => {
+          if (mentor.Subjects !== undefined && mentor.Subjects.length > 0) {
+            return (<Mentor mentor={mentor} deleteOneMentor={deleteOneMentor} fetchMentors={fetchMentors} setCurrentMentor={setCurrentMentor}/>)
+          }
+          })}   
+        </div>
+        <footer><a href="https://github.com/dalpal07/hackathon">Github Repo</a></footer>
       </div>
     );
   }
@@ -223,6 +243,7 @@ function App() {
 	      <div id="back">
               <button onClick={e => setCurrentMentor({})} className="slight-design">Back</button>
 	      </div>
+	      <footer><a href="https://github.com/dalpal07/hackathon">Github Repo</a></footer>
           </div>
       );
       }

@@ -102,7 +102,7 @@ app.post('/api/mentors', async (req, res) => {
 app.delete('/api/mentors/:_id', async (req, res) => {
   try {
     await Mentor.deleteOne({
-      userName: req.params._id
+      _id: req.params._id
     });
     res.sendStatus(200);
   } catch (error) {
